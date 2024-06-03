@@ -7,14 +7,37 @@ using Microsoft.OpenApi.Models;
 using Hangfire;
 using MovieRecommendationSystem.Application.Services;
 using MovieRecommendationSystem.Application.Interfaces;
+using MovieRecommendationSystem.Infrastructure.APIs;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies.Backup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+var configuration = builder.Configuration;
+TheMovieAPIs.Initialize(configuration);
 
 // Add services to the container.
 builder.Services.AddApplication();
 builder.Services.AddControllers();
+
+
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseDefaultTypeSerializer()
+    .UseMongoStorage(builder.Configuration.GetConnectionString("MongoConnection"), new MongoStorageOptions
+    {
+        MigrationOptions = new MongoMigrationOptions
+        {
+            MigrationStrategy = new MigrateMongoMigrationStrategy(),
+            BackupStrategy = new CollectionMongoBackupStrategy()
+        },
+        Prefix = "hangfire.mongo",
+        CheckConnection = true
+    }));
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddAuthentication(x =>
 {
@@ -36,8 +59,6 @@ builder.Services.AddAuthentication(x =>
            Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
     };
 });
-//builder.Services.AddHangfireServer();
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("User", policy => policy.RequireRole("User"));
@@ -110,9 +131,9 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieRecomm
 app.UseHttpsRedirection();
 app.UseRouting();
 
-//app.UseHangfireDashboard();
+app.UseHangfireDashboard();
 
-//RecurringJob.AddOrUpdate<MovieRecommendationSystemService>(service => service.SendDailySurveyReport(), "*/5 * * * *");
+RecurringJob.AddOrUpdate<HangfireService>(service => service.SaveDailyMovie(), "*/5 * * * *");
 
 app.UseCors();
 

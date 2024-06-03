@@ -27,9 +27,6 @@ namespace MovieRecommendationSystem.Application.Handlers.UserHandlers.CommandHan
 
         public async Task<Response<UserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            TheMovieAPIs.GetAllMovies();
-
-
             if (!GlobalFunctions.EmailControll(request.Email))
                 return Response<UserResponse>.Fail("Please enter a correct e-mail", 409);
 
