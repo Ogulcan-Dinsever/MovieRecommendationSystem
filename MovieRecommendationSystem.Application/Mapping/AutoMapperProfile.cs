@@ -14,6 +14,7 @@ namespace MovieRecommendationSystem.Application.Mapping
         public AutoMapperProfile()
         {
            CreateMap<User, UserResponse>().ReverseMap();
+           CreateMap<Movie, MovieResponse>().ReverseMap();
         }
     }
 }

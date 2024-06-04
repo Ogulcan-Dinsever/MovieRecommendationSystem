@@ -11,6 +11,7 @@ using MovieRecommendationSystem.Infrastructure.APIs;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies.Backup;
+using MovieRecommendationSystem.Infrastructure.ServicesInfra;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,7 +66,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
 });
-
+builder.Services.AddSingleton<RabbitMQHelper>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

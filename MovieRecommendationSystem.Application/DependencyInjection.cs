@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using MovieRecommendationSystem.Application.Helpers;
 using MovieRecommendationSystem.Application.PipelineBehaviours;
+using MovieRecommendationSystem.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,9 @@ namespace MovieRecommendationSystem.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddTransient<SendMailRequestHandler>();
+            services.AddTransient<UserHelper>();
+
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));

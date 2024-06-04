@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MovieRecommendationSystem.Application.Interfaces;
 using MovieRecommendationSystem.Domain.Common;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,18 @@ namespace MovieRecommendationSystem.Application.Services
             var result = await _dbContext.Find(filter).ToListAsync();
             return result;
         }
+        public async Task<List<T>> GetAllTake(Expression<Func<T, bool>> expression, int Take, int PageNum)
+        {
+            var startedData = (PageNum - 1) * Take;
+
+            var filter = Builders<T>.Filter.Where(expression);
+            return await _dbContext.AsQueryable()
+                                    .Where(expression)
+                                    .Skip(startedData)
+                                    .Take(Take)
+                                    .ToListAsync();
+        }
+
 
         public async Task Update(T entity)
         {

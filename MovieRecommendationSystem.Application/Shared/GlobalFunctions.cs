@@ -90,5 +90,27 @@ namespace MovieRecommendationSystem.Application.Shared
                 }
             }
         }
+
+        public static string CreateMailBody(string movieName, string img, string userName)
+        {
+            string imageUrl = "https://image.tmdb.org/t/p/w500" + img;
+
+
+            var response = $@"
+<h2>{userName} recommended you a movie<h2> <hr>
+        <table>
+            <tr>
+                <td> ""{movieName}""
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src= ""{imageUrl}""  width=""500"" height=""600"" alt>
+                </td>
+            </tr></table>
+            ";
+
+            return response;
+        }
     }
 }

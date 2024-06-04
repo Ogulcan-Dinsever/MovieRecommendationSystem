@@ -41,7 +41,7 @@ namespace MovieRecommendationSystem.Application.Handlers.UserHandlers.CommandHan
                 return Response<UserResponse>.Fail("Email address or username not found..", 409);
 
             if (request.Password != GlobalFunctions.DecryptString(user.Password))
-                return Response<UserResponse>.Fail("Email address or username not found..", 409);
+                return Response<UserResponse>.Fail("wrong password..", 409);
 
             var response = _mapper.Map<UserResponse>(user);
 
@@ -58,7 +58,7 @@ namespace MovieRecommendationSystem.Application.Handlers.UserHandlers.CommandHan
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, userId),
                     new Claim(ClaimTypes.Role, userRole)
                 }),
 

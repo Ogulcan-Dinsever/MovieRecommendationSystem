@@ -15,6 +15,7 @@ namespace MovieRecommendationSystem.Application.Interfaces
         Task<T> Find(Expression<Func<T, bool>> expression);
         Task<List<T>> GetAll();
         Task<List<T>> GetAll(Expression<Func<T, bool>> expression);
+        Task<List<T>> GetAllTake(Expression<Func<T, bool>> expression, int Take, int PageNum);
         Task Update(T entity);
         Task<bool> Any(Expression<Func<T, bool>> expression);
         Task<int> Delete(Expression<Func<T, bool>> entity);
